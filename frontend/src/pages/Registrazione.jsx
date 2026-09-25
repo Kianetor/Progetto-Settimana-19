@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+import SchedaAccesso from '../components/SchedaAccesso'
 import { Campo, Errore, bottone, inputClass } from '../components/ui'
 import { useAuth } from '../context/AuthContext'
 
@@ -31,9 +32,19 @@ export default function Registrazione() {
   }
 
   return (
-    <section className="mx-auto max-w-sm space-y-6">
-      <h1 className="text-2xl font-bold">Crea un account</h1>
-      <form onSubmit={invia} className="space-y-4 rounded-xl border border-slate-200 bg-white p-6">
+    <SchedaAccesso
+      titolo="Crea il tuo account"
+      sottotitolo="Salva le auto e ricevi gli avvisi di prezzo"
+      piede={
+        <>
+          Hai già un account?{' '}
+          <Link to="/login" className="font-semibold text-accent-400 hover:underline">
+            Accedi
+          </Link>
+        </>
+      }
+    >
+      <form onSubmit={invia} className="space-y-4">
         <Campo etichetta="Nome" errore={erroriCampi.nome}>
           <input className={inputClass} required maxLength={60} value={dati.nome} onChange={aggiorna('nome')} />
         </Campo>
@@ -47,7 +58,7 @@ export default function Registrazione() {
             onChange={aggiorna('email')}
           />
         </Campo>
-        <Campo etichetta="Password (almeno 8 caratteri)" errore={erroriCampi.password}>
+        <Campo etichetta="Password · almeno 8 caratteri" errore={erroriCampi.password}>
           <input
             className={inputClass}
             type="password"
@@ -64,12 +75,6 @@ export default function Registrazione() {
           Registrati
         </button>
       </form>
-      <p className="text-center text-sm text-slate-600">
-        Hai già un account?{' '}
-        <Link to="/login" className="font-medium text-blue-700 hover:underline">
-          Accedi
-        </Link>
-      </p>
-    </section>
+    </SchedaAccesso>
   )
 }

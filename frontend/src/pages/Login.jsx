@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
+import SchedaAccesso from '../components/SchedaAccesso'
 import { Campo, Errore, bottone, inputClass } from '../components/ui'
 import { useAuth } from '../context/AuthContext'
 
@@ -31,9 +32,19 @@ export default function Login() {
   }
 
   return (
-    <section className="mx-auto max-w-sm space-y-6">
-      <h1 className="text-2xl font-bold">Accedi</h1>
-      <form onSubmit={invia} className="space-y-4 rounded-xl border border-slate-200 bg-white p-6">
+    <SchedaAccesso
+      titolo="Bentornato"
+      sottotitolo="Accedi per ritrovare preferiti e avvisi"
+      piede={
+        <>
+          Non hai un account?{' '}
+          <Link to="/registrazione" className="font-semibold text-accent-400 hover:underline">
+            Registrati
+          </Link>
+        </>
+      }
+    >
+      <form onSubmit={invia} className="space-y-4">
         <Campo etichetta="Email">
           <input
             className={inputClass}
@@ -59,12 +70,6 @@ export default function Login() {
           Accedi
         </button>
       </form>
-      <p className="text-center text-sm text-slate-600">
-        Non hai un account?{' '}
-        <Link to="/registrazione" className="font-medium text-blue-700 hover:underline">
-          Registrati
-        </Link>
-      </p>
-    </section>
+    </SchedaAccesso>
   )
 }
