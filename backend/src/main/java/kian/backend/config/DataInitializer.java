@@ -45,6 +45,10 @@ public class DataInitializer implements ApplicationRunner {
     }
 
     private void creaAdmin() {
+        if (adminEmail == null || adminEmail.isBlank() || adminPassword == null || adminPassword.length() < 8) {
+            log.warn("Amministratore non creato: impostare ADMIN_EMAIL e ADMIN_PASSWORD (almeno 8 caratteri)");
+            return;
+        }
         String email = adminEmail.trim().toLowerCase(Locale.ROOT);
         if (utenteRepository.findByEmail(email).isEmpty()) {
             Utente admin = new Utente();

@@ -2,6 +2,8 @@ import { Link, Route, Routes } from 'react-router-dom'
 import Navbar from './components/Navbar'
 import RichiedeAccesso from './components/RichiedeAccesso'
 import { bottone } from './components/ui'
+import AdminAuto from './pages/admin/AdminAuto'
+import AdminFormAuto from './pages/admin/AdminFormAuto'
 import AreaPersonale from './pages/AreaPersonale'
 import Catalogo from './pages/Catalogo'
 import DettaglioAuto from './pages/DettaglioAuto'
@@ -24,6 +26,30 @@ export default function App() {
             element={
               <RichiedeAccesso>
                 <AreaPersonale />
+              </RichiedeAccesso>
+            }
+          />
+          <Route
+            path="/admin"
+            element={
+              <RichiedeAccesso soloAdmin>
+                <AdminAuto />
+              </RichiedeAccesso>
+            }
+          />
+          <Route
+            path="/admin/auto/nuova"
+            element={
+              <RichiedeAccesso soloAdmin>
+                <AdminFormAuto />
+              </RichiedeAccesso>
+            }
+          />
+          <Route
+            path="/admin/auto/:id"
+            element={
+              <RichiedeAccesso soloAdmin>
+                <AdminFormAuto />
               </RichiedeAccesso>
             }
           />
