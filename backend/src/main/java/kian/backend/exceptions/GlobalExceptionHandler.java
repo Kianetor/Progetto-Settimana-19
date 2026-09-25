@@ -1,5 +1,6 @@
 package kian.backend.exceptions;
 
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -39,6 +40,13 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.CONFLICT)
     public Map<String, Object> conflitto(ObjectOptimisticLockingFailureException ex) {
         return Map.of("status", 409, "message", "Dati modificati da un'altra richiesta, ricarica e riprova");
+    }
+
+    // Vincolo del database violato (es. due richieste identiche contemporanee): niente dettagli SQL al client
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public Map<String, Object> vincolo(DataIntegrityViolationException ex) {
+        return Map.of("status", 409, "message", "Operazione in conflitto con i dati esistenti");
     }
 
     @ExceptionHandler(ResponseStatusException.class)
