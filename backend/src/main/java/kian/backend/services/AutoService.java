@@ -2,9 +2,11 @@ package kian.backend.services;
 
 import kian.backend.dto.*;
 import kian.backend.entities.Auto;
+import kian.backend.events.PrezzoRibassato;
 import kian.backend.repositories.AutoRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -46,6 +48,7 @@ public class AutoService {
     private static final Sort SORT_PREDEFINITO = Sort.by(Sort.Direction.DESC, "createdAt");
 
     private final AutoRepository autoRepository;
+    private final ApplicationEventPublisher eventPublisher;
 
     @Transactional(readOnly = true)
     public PageResponse<AutoPubblicaResponse> catalogo(AutoSearchParams params, Pageable pageable) {
@@ -96,7 +99,8 @@ public class AutoService {
         return AutoAdminResponse.of(auto);
     }
 
-    // Unico punto in cui cambia il prezzo di un'auto esistente
+    // Unico punto in cui cambia il prezzo di un'auto esistente. Solo un ribasso può far scattare un avviso:
+    // l'evento viene consegnato agli ascoltatori dopo il commit, quindi mai per un salvataggio fallito
     private void cambiaPrezzo(Auto auto, BigDecimal nuovo) {
         BigDecimal vecchio = auto.getPrezzo();
         if (vecchio.compareTo(nuovo) == 0) {
@@ -104,6 +108,9 @@ public class AutoService {
         }
         auto.setPrezzo(nuovo);
         log.info("Prezzo cambiato auto={}", auto.getId());
+        if (nuovo.compareTo(vecchio) < 0) {
+            eventPublisher.publishEvent(new PrezzoRibassato(auto.getId(), vecchio, nuovo));
+        }
     }
 
     private static void applica(Auto auto, AutoRequest r) {
